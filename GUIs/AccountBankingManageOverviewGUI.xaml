@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BankingManagesandServicesApp.GUIs"
         mc:Ignorable="d"
-        Title="AccountBankingManageOverviewGUI" Height="450" Width="800">
+        Title="AccountBankingManageOverviewGUI" Height="450" Width="800"
+        ResizeMode="NoResize">
     <Grid>
-        
+        <Label Content="MỤC QUẢN LÝ TÀI KHOẢN KHÁCH HÀNG TỔNG QUAN " HorizontalAlignment="Center" Height="36" Margin="0,23,0,0" VerticalAlignment="Top" Width="308" RenderTransformOrigin="0.52,2.229"/>
+        <Button Content="Thêm Tài Khoản" HorizontalAlignment="Left" Height="42" Margin="143,367,0,0" VerticalAlignment="Top" Width="210" Click="Button_Click"/>
+        <Button Content="Tìm Kiếm Tài Khoản" HorizontalAlignment="Left" Height="42" Margin="420,367,0,0" VerticalAlignment="Top" Width="210" Click="Button_Click"/>
+        <Menu HorizontalAlignment="Left" Height="18" Margin="619,10,0,0" VerticalAlignment="Top" Width="59">
+            <MenuItem Header="Xin chào" Width="58">
+                <MenuItem Header="Xem chi tiết tài khoản"/>
+                <MenuItem Header="Đổi mật khẩu"/>
+                <MenuItem Header="Đăng xuất"/>
+            </MenuItem>
+        </Menu>
+        <DataGrid HorizontalAlignment="Left" Height="126" Margin="108,103,0,0" VerticalAlignment="Top" Width="618" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="DataGrid_SelectionChanged"/>
+
     </Grid>
 </Window>
