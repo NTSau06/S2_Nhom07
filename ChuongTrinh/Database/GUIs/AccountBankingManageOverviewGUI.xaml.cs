@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using BankingManagesandServicesApp.Controls;
 
 namespace BankingManagesandServicesApp.GUIs
 {
@@ -19,9 +20,28 @@ namespace BankingManagesandServicesApp.GUIs
     /// </summary>
     public partial class AccountBankingManageOverviewGUI : Window
     {
+        Controls.AccountBankingControl abc;
         public AccountBankingManageOverviewGUI()
         {
+            Show();
+        }
+        private void Show()
+        {
             InitializeComponent();
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
