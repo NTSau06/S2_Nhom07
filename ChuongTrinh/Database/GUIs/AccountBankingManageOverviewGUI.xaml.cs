@@ -1,47 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using BankingManagesandServicesApp.Controls;
-
-namespace BankingManagesandServicesApp.GUIs
+using BankingManagesandServicesApp.DBManages;
+using Microsoft.Data.SqlClient;
+namespace BankingManagesandServicesApp.GUIs;
+public partial class AccountBankingManageOverviewGUI : AuthenticatedWindow
 {
-    /// <summary>
-    /// Interaction logic for AccountBankingManageOverviewGUI.xaml
-    /// </summary>
-    public partial class AccountBankingManageOverviewGUI : Window
+    private bool loading;
+    public AccountBankingManageOverviewGUI() { InitializeComponent(); Loaded += async (_, _) => await LoadAsync(); }
+    private async Task LoadAsync()
     {
-        Controls.AccountBankingControl abc;
-        public AccountBankingManageOverviewGUI()
+        if (loading) return;
+        loading = true;
+        try
         {
-            Show();
+            await using var db = await DBConnectandManage.OpenAsync();
+            await using var cmd = new SqlCommand("SELECT idacc,fullname,phone,typeacc,money FROM dbo.AccountBank WHERE @q=N'' OR CHARINDEX(@q,idacc)>0 OR CHARINDEX(@q,fullname)>0 ORDER BY idacc", db);
+            cmd.Parameters.Add("@q", SqlDbType.NVarChar, 100).Value = SearchBox.Text.Trim();
+            await using var reader = await cmd.ExecuteReaderAsync();
+            var table = new DataTable(); table.Load(reader);
+            AccountsGrid.ItemsSource = table.DefaultView;
+            MessageText.Text = $"Có {table.Rows.Count} tài khoản.";
         }
-        private void Show()
-        {
-            InitializeComponent();
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
+        catch (Exception ex) { MessageText.Text = "Không tải được tài khoản: " + ex.Message; }
+        finally { loading = false; }
     }
+    private async void Search_Click(object sender, RoutedEventArgs e) => await LoadAsync();
+    private void Back_Click(object sender, RoutedEventArgs e) => Close();
 }
