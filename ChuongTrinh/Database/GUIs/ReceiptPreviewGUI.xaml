@@ -1,0 +1,31 @@
+<local:AuthenticatedWindow x:Class="BankingManagesandServicesApp.GUIs.ReceiptPreviewGUI"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:local="clr-namespace:BankingManagesandServicesApp.GUIs"
+ Title="Xem và xuất chứng từ giao dịch" Width="960" Height="850" MinWidth="850" MinHeight="650" WindowStartupLocation="CenterOwner">
+ <DockPanel>
+  <local:SessionHeader DockPanel.Dock="Top"/>
+  <StackPanel DockPanel.Dock="Bottom" Margin="24,12,24,18">
+   <TextBlock x:Name="MessageText" Text="Chọn định dạng và nơi lưu chứng từ." TextWrapping="Wrap" Margin="0,0,0,10"/>
+   <StackPanel x:Name="ExportActions" Orientation="Horizontal" HorizontalAlignment="Right">
+    <Button Content="Đóng" Click="Close_Click" Background="#DCE6F1" Foreground="#142D4E"/>
+    <ComboBox x:Name="FormatBox" SelectedIndex="0" Width="115" Margin="0,0,12,0"><ComboBoxItem Content="PDF"/><ComboBoxItem Content="HTML"/></ComboBox>
+    <Button Content="Lưu chứng từ" Click="Export_Click"/>
+   </StackPanel>
+  </StackPanel>
+  <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="24,20,24,0">
+   <Border Background="White" Padding="30" BorderBrush="#D6E1EC" BorderThickness="1">
+    <StackPanel>
+     <TextBlock Text="CHỨNG TỪ GIAO DỊCH" FontSize="26" FontWeight="Bold" Foreground="#142D4E"/>
+     <TextBlock Text="BẢN DEMO ĐỒ ÁN - Không dùng làm chứng từ ngân hàng thực tế" Foreground="#65758A" Margin="0,8,0,24"/>
+     <ItemsControl x:Name="FieldsList"><ItemsControl.ItemTemplate><DataTemplate>
+      <Border Background="#F3F6FA" Padding="12" Margin="0,0,0,3"><Grid>
+       <Grid.ColumnDefinitions><ColumnDefinition Width="190"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+       <TextBlock Text="{Binding Label}" FontWeight="SemiBold"/>
+       <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap"/>
+      </Grid></Border>
+     </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+    </StackPanel>
+   </Border>
+  </ScrollViewer>
+ </DockPanel>
+</local:AuthenticatedWindow>

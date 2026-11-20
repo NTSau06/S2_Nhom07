@@ -1,0 +1,20 @@
+PASS: Reject wrong password
+PASS: Reject SQL injection login
+PASS: Login and role export permission from SQL Server
+PASS: Demo setup is idempotent: four transactions
+PASS: Filter successful transactions
+PASS: Filter date range
+PASS: Empty search result
+PASS: Main window loads SQL data on opening
+PASS: Save PDF and audit logs
+PASS: Save HTML and audit logs
+PASS: One transaction log per successful export
+PASS: Demo PDF has one A4 page
+PASS: HTML escapes database text
+PASS: Pending transaction cannot issue receipt
+PASS: Failed transaction cannot issue receipt
+PASS: File failure does not record successful export
+PASS: Database rechecks authorization
+PASS: Logout clears session and returns to login
+PASS: Feature access rejected after logout
+PASS: Logout written to ActivityLog

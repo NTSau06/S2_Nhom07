@@ -8,4 +8,13 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Tests\**\*.cs" />
+    <Page Remove="Tests\**\*.xaml" />
+    <None Remove="Tests\**" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.8" />
+    <PackageReference Include="PDFsharp-WPF" Version="6.2.4" />
+    <None Update="database.config" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
