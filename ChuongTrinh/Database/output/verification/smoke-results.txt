@@ -1,3 +1,16 @@
+PASS: Statistics count each transaction once and include all statuses in total amount
+PASS: Successful amount excludes pending and failed transactions
+PASS: Combine type, inclusive amount bounds and flag filters
+PASS: Equal amount bounds include exact amount
+PASS: Flagged-only filter
+PASS: Cleared extra filters include all transactions
+PASS: Statistics use only filtered rows
+PASS: Group statistics by transaction type
+PASS: Group statistics by transaction status
+PASS: Empty results reset statistics without division by zero
+PASS: Statistics share receipt success status rules
+PASS: Reject reversed amount range
+PASS: Reject negative amount range
 PASS: Reject wrong password
 PASS: Reject SQL injection login
 PASS: Login and role export permission from SQL Server
@@ -6,6 +19,17 @@ PASS: Filter successful transactions
 PASS: Filter date range
 PASS: Empty search result
 PASS: Main window loads SQL data on opening
+PASS: Filter request finishes
+PASS: UI summary reflects all four demo transactions
+PASS: Filter request finishes
+PASS: UI combines advanced filters
+PASS: UI grouped statistics match filtered transaction amount
+PASS: Filter request finishes
+PASS: Invalid amount shows validation and preserves applied results
+PASS: Reset clears advanced filters and restores results
+PASS: Filter request finishes
+PASS: Empty UI search clears grouped statistics and percentage
+PASS: Filter request finishes
 PASS: Save PDF and audit logs
 PASS: Save HTML and audit logs
 PASS: One transaction log per successful export
