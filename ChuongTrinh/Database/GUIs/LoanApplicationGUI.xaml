@@ -1,0 +1,59 @@
+﻿<Window x:Class="BankingManagesandServicesApp.GUIs.LoanApplicationGUI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Vay tiền" Height="620" Width="900" WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="20">
+        <TextBlock DockPanel.Dock="Top" Text="Đăng ký vay tiền"
+                   FontSize="24" FontWeight="Bold" Foreground="#142D4E" Margin="0,0,0,12"/>
+        <TextBlock DockPanel.Dock="Bottom" x:Name="StatusText" Margin="0,10,0,0" Foreground="#176B97" TextWrapping="Wrap"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- UC1.2.9.1: biểu mẫu đăng ký khoản vay -->
+            <StackPanel Margin="0,0,20,0">
+                <TextBlock Text="Số tiền vay (VND)"/>
+                <TextBox x:Name="AmountBox" Margin="0,5,0,12"/>
+
+                <TextBlock Text="Thời hạn vay"/>
+                <ComboBox x:Name="TermBox" Margin="0,5,0,12"/>
+
+                <TextBlock Text="Mục đích vay"/>
+                <TextBox x:Name="PurposeBox" Margin="0,5,0,12"/>
+
+                <TextBlock Text="CCCD/CMND"/>
+                <DockPanel Margin="0,5,0,12">
+                    <Button DockPanel.Dock="Right" Content="Chọn file" Click="ChooseIdCard_Click" Margin="8,0,0,0"/>
+                    <TextBox x:Name="IdCardBox" IsReadOnly="True"/>
+                </DockPanel>
+
+                <TextBlock Text="Chứng minh thu nhập"/>
+                <DockPanel Margin="0,5,0,16">
+                    <Button DockPanel.Dock="Right" Content="Chọn file" Click="ChooseIncome_Click" Margin="8,0,0,0"/>
+                    <TextBox x:Name="IncomeBox" IsReadOnly="True"/>
+                </DockPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Xác nhận gửi" Click="Submit_Click" Margin="0,0,8,0"/>
+                    <Button Content="Hủy" Click="Cancel_Click"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Hồ sơ đã gửi (trạng thái Chờ duyệt) -->
+            <DockPanel Grid.Column="1">
+                <TextBlock DockPanel.Dock="Top" Text="Hồ sơ vay đã gửi" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <DataGrid x:Name="LoanGrid" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Mã hồ sơ" Binding="{Binding Code}" Width="130"/>
+                        <DataGridTextColumn Header="Số tiền (VND)" Binding="{Binding Amount, StringFormat=N0}" Width="*"/>
+                        <DataGridTextColumn Header="Thời hạn" Binding="{Binding Term}" Width="80"/>
+                        <DataGridTextColumn Header="Trạng thái" Binding="{Binding Status}" Width="90"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>
