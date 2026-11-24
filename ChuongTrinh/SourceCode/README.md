@@ -25,7 +25,10 @@ dotnet run --project .\BankingManagesandServicesApp.csproj
 
 1. Nhập mật khẩu sai: hiện thông báo, không mở giao diện chức năng.
 2. Đăng nhập đúng: mở **Quản lý nhật ký giao dịch**; góc trên hiện `Nguyễn Minh Anh (admin.demo)` và vai trò.
-3. Tìm `DEMO-GD001`; chọn dòng để đọc nhật ký. Có thể lọc trạng thái và khoảng ngày (bao gồm cả ngày kết thúc).
+3. Nhập `DEMO-`, bấm **Sàng lọc**: bộ demo có 4 giao dịch, tổng 33.000.000 VND, 2 thành công với số tiền 12.500.000 VND, tỷ lệ thành công 50%, 1 giao dịch có cảnh báo. Có thể lọc theo từ khóa, trạng thái, khoảng ngày (bao gồm cả ngày kết thúc), loại giao dịch, khoảng số tiền và cảnh báo. Số tiền lọc nhập số nguyên VND không có dấu phân cách, ví dụ `2500000`; để trống để không giới hạn. Loại giao dịch để trống nghĩa là tất cả; có thể chọn gợi ý hoặc nhập loại khác.
+   - Chọn loại `Chuyển khoản`, số tiền từ `2500000` đến `20000000`, cảnh báo **Không có cảnh báo**, bấm **Sàng lọc**: chỉ còn `DEMO-GD001`.
+   - Mở tab **Thống kê giao dịch** để xem số lượng và tổng tiền theo trạng thái/loại giao dịch. Thống kê chỉ tính các giao dịch trong kết quả lọc đã áp dụng; thay đổi tiêu chí cần bấm **Sàng lọc**. Tổng số tiền gồm mọi trạng thái; đây là giá trị giao dịch, không phải số dư hoặc doanh thu.
+   - Bấm **Đặt lại** để bỏ toàn bộ điều kiện. Tìm `DEMO-GD001`, mở tab **Giao dịch và nhật ký**, chọn dòng để đọc lịch sử.
 4. Bấm **Xem / Xuất chứng từ** để xem thông tin giao dịch, khách hàng, số tiền, người xuất và thời điểm xuất.
 5. Chọn **PDF** hoặc **HTML**, bấm **Lưu chứng từ**, chọn nơi lưu. Tệp PDF hỗ trợ tiếng Việt; HTML mở bằng trình duyệt và có nút In.
 6. Đóng cửa sổ chứng từ: nhật ký có dòng **Xuất chứng từ**. Mỗi lần lưu thành công tạo một dòng `TransactionLog` và một dòng `ActivityLog`. Hủy hộp thoại lưu không ghi log xuất.
@@ -74,5 +77,13 @@ dotnet run --project .\Tests\Banking.SmokeTests.csproj
 ```
 
 Kiểm thử dùng SQL Server trong `database.config`, chuẩn bị bộ demo và ghi log kiểm thử. Kết quả, ảnh giao diện và chứng từ mẫu nằm ở `output/verification/`. Chỉ chạy trên database demo của nhóm.
+
+Kiểm tra riêng logic sàng lọc và thống kê (không mở giao diện, không cần SQL Server):
+
+```powershell
+dotnet run --project .\Tests\Banking.SmokeTests.csproj -- --analysis-only
+```
+
+Bộ kiểm thử tích hợp còn kiểm tra bộ lọc nâng cao trên giao diện, thống kê sau lọc, nhập số tiền sai, đặt lại và kết quả rỗng. Ảnh tab thống kê: `output/verification/05-statistics.png`. Chứng từ demo: `output/verification/receipt-demo.pdf` và `receipt-demo.html`.
 
 Thư viện: [Microsoft.Data.SqlClient](https://www.nuget.org/packages/Microsoft.Data.SqlClient/6.1.8), [PDFsharp-WPF](https://www.nuget.org/packages/PDFsharp-WPF/6.2.4). Hướng dẫn phông chữ từ [PDFsharp](https://docs.pdfsharp.net/PDFsharp/Topics/Fonts/Font-Resolving.html).
