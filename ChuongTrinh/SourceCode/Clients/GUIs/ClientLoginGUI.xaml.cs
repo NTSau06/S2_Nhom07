@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using BankingClientApp.Controls;
 using BankingManagesandServicesApp.DBManages;
@@ -11,10 +10,11 @@ using BankingManagesandServicesApp.GUIs;
 namespace BankingClientApp.GUIs
 {
     /// <summary>
-    /// Màn hình đăng nhập &amp; cổng dịch vụ dành riêng cho Khách hàng (Clients).
+    /// Màn hình chính &amp; cổng dịch vụ dành riêng cho Khách hàng (tự động đăng nhập sẵn).
     /// </summary>
     public partial class ClientLoginGUI : Window
     {
+        private const string DefaultCustomerId = "1000000000001";
         private readonly TransferControl tc = new TransferControl();
         private AccountBank? customer;
 
@@ -33,40 +33,49 @@ namespace BankingClientApp.GUIs
                 lblDbStatus.Text = $"✔ Đã kết nối: {srv} / {DBConnectandManage.DatabaseName}";
                 badgeDb.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#14532D"));
                 badgeDb.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4ADE80"));
-                LoadDemoAccounts();
+                AutoSignInDefaultCustomer();
             }
             else
             {
                 lblDbStatus.Text = "✘ Chưa kết nối được CSDL — bấm 'Đổi Server'";
                 badgeDb.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F1D1D"));
                 badgeDb.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171"));
+                lblCustomerName.Text = "Chưa kết nối CSDL";
+                lblCustomerMeta.Text = "Kiểm tra lại SQL Server";
                 MessageBox.Show(error, "Lỗi kết nối CSDL", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void LoadDemoAccounts()
+        private void AutoSignInDefaultCustomer()
         {
             try
             {
-                List<AccountBank> accounts = tc.loadallaccounts();
-                var items = new List<DemoAccountItem>();
-                foreach (var a in accounts)
-                    items.Add(new DemoAccountItem { Id = a.idacc, Display = $"{a.idacc} — {a.fullname} ({a.money:N0}đ)" });
-                cbDemoAccounts.ItemsSource = items;
-                cbDemoAccounts.DisplayMemberPath = "Display";
-                if (items.Count > 0 && cbDemoAccounts.SelectedIndex < 0)
-                    cbDemoAccounts.SelectedIndex = 0;
-
+                if (customer == null)
+                {
+                    customer = tc.loadsender(DefaultCustomerId);
+                    if (customer == null)
+                    {
+                        List<AccountBank> accounts = tc.loadallaccounts();
+                        customer = accounts.FirstOrDefault();
+                    }
+                }
                 RefreshCustomerInfo();
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Lỗi tải tài khoản", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void RefreshCustomerInfo()
         {
-            if (customer == null) return;
+            if (customer == null)
+            {
+                lblCustomerName.Text = "Không tìm thấy tài khoản";
+                lblCustomerMeta.Text = "STK: ---";
+                lblCustomerBalance.Text = "0 VNĐ";
+                return;
+            }
             try
             {
                 AccountBank? fresh = tc.loadsender(customer.idacc);
@@ -96,49 +105,14 @@ namespace BankingClientApp.GUIs
             CheckDatabase();
         }
 
-        private void cbDemoAccounts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private bool EnsureCustomerLoaded()
         {
-            if (cbDemoAccounts.SelectedItem is DemoAccountItem item)
-            {
-                txtCustomerId.Text = item.Id;
-                txtPassword.Password = "123456";
-            }
-        }
-
-        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter) btnLogin_Click(sender, e);
-        }
-
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                customer = tc.checkcustomerlogin(txtCustomerId.Text.Trim(), txtPassword.Password);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Lỗi CSDL", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-
-            if (customer == null)
-            {
-                MessageBox.Show("Sai mã tài khoản hoặc mật khẩu.", "Đăng nhập", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            pnlLoginForm.Visibility = Visibility.Collapsed;
-            pnlCustomerDashboard.Visibility = Visibility.Visible;
-            RefreshCustomerInfo();
-        }
-
-        private void btnLogout_Click(object sender, RoutedEventArgs e)
-        {
-            customer = null;
-            pnlCustomerDashboard.Visibility = Visibility.Collapsed;
-            pnlLoginForm.Visibility = Visibility.Visible;
-            LoadDemoAccounts();
+            if (customer != null) return true;
+            AutoSignInDefaultCustomer();
+            if (customer != null) return true;
+            MessageBox.Show("Chưa tải được thông tin tài khoản khách hàng. Vui lòng kiểm tra kết nối SQL Server.",
+                "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
         }
 
         private void OpenFeature(Window w)
@@ -156,28 +130,22 @@ namespace BankingClientApp.GUIs
 
         private void btnTransfer_Click(object sender, RoutedEventArgs e)
         {
-            if (customer != null) OpenFeature(new TransferGUI(customer.idacc));
+            if (EnsureCustomerLoaded() && customer != null) OpenFeature(new TransferGUI(customer.idacc));
         }
 
         private void btnMyCredit_Click(object sender, RoutedEventArgs e)
         {
-            if (customer != null) OpenFeature(new CreditHistorySearchGUI(customer.idacc));
+            if (EnsureCustomerLoaded() && customer != null) OpenFeature(new CreditHistorySearchGUI(customer.idacc));
         }
 
         private void btnMyDebt_Click(object sender, RoutedEventArgs e)
         {
-            if (customer != null) OpenFeature(new DebtTrackingGUI(customer.idacc));
+            if (EnsureCustomerLoaded() && customer != null) OpenFeature(new DebtTrackingGUI(customer.idacc));
         }
 
         private void btnApplyLoan_Click(object sender, RoutedEventArgs e)
         {
             OpenFeature(new LoanApplicationGUI());
-        }
-
-        private class DemoAccountItem
-        {
-            public string Id { get; set; } = "";
-            public string Display { get; set; } = "";
         }
     }
 }
